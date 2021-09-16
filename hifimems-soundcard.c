@@ -49,7 +49,8 @@ static struct snd_soc_ops snd_rpi_hifimems_soundcard_ops = {
 
 static struct snd_soc_dai_link_component cpus[] = {
 	{
-		.name	= "bcm2708-i2s.0",
+		// .name	= "bcm2708-i2s.0",
+		// .dai_name	= "bcm2708-i2s.0",
 	},
 };
 
@@ -62,8 +63,8 @@ static struct snd_soc_dai_link_component codecs[] = {
 
 static struct snd_soc_dai_link_component platforms[] = {
 	{
-		.name	= "bcm2708-i2s.0",
-		.dai_name	= "bcm2708-i2s.0",
+		// .name	= "bcm2708-i2s.0",
+		// .dai_name	= "bcm2708-i2s.0",
 	},
 };
 
@@ -104,9 +105,9 @@ static int snd_rpi_hifimems_soundcard_probe(struct platform_device *pdev)
 					"i2s-controller", 0);
 
 		if (i2s_node) {
-			dai->cpus->dai_name = NULL;
+			// dai->cpus->dai_name = NULL;
 			dai->cpus->of_node = i2s_node;
-			dai->platforms->name = NULL;
+			// dai->platforms->name = NULL;
 			dai->platforms->of_node = i2s_node;
 		}
 	}
