@@ -50,7 +50,6 @@ static struct snd_soc_ops snd_rpi_hifimems_soundcard_ops = {
 static struct snd_soc_dai_link_component cpus[] = {
 	{
 		.name	= "bcm2708-i2s.0",
-		.dai_name	= "bcm2708-i2s.0",
 	},
 };
 
