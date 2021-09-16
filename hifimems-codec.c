@@ -29,14 +29,6 @@
 #include <sound/soc-dai.h>
 #include <sound/soc-dapm.h>
 
-static int hifimems_codec_probe(struct snd_soc_codec *codec) {
-  return 0;
-}
-
-static int hifimems_codec_remove(struct snd_soc_codec *codec) {
-  return 0;
-}
-
 static const struct snd_soc_dapm_widget hifimems_dapm_widgets[] = {
     SND_SOC_DAPM_OUTPUT("Speaker"),
 };
@@ -45,19 +37,11 @@ static const struct snd_soc_dapm_route hifimems_dapm_routes[] = {
     {"Speaker", NULL, "Playback"},
 };
 
-static struct snd_soc_codec_driver hifimems_codec_driver = {
-    .probe = hifimems_codec_probe,
-    .remove = hifimems_codec_remove,
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
-    .component_driver = {
-#endif
-    .dapm_widgets = hifimems_dapm_widgets,
+static struct snd_soc_component_driver hifimems_component = {
+	.dapm_widgets = hifimems_dapm_widgets,
     .num_dapm_widgets = ARRAY_SIZE(hifimems_dapm_widgets),
     .dapm_routes = hifimems_dapm_routes,
     .num_dapm_routes = ARRAY_SIZE(hifimems_dapm_routes),
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 9, 0)
-    },
-#endif
 };
 
 static struct snd_soc_dai_driver hifimems_dai = {
@@ -84,11 +68,11 @@ MODULE_DEVICE_TABLE(of, hifimems_ids);
 #endif
 
 static int hifimems_platform_probe(struct platform_device *pdev) {
-  return snd_soc_register_codec(&pdev->dev, &hifimems_codec_driver, &hifimems_dai, 1);
+  return devm_snd_soc_register_component(&pdev->dev, &hifimems_component, &hifimems_dai, 1);
 }
 
 static int hifimems_platform_remove(struct platform_device *pdev) {
-  snd_soc_unregister_codec(&pdev->dev);
+  snd_soc_unregister_component(&pdev->dev);
   return 0;
 }
 
