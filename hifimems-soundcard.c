@@ -105,9 +105,7 @@ static int snd_rpi_hifimems_soundcard_probe(struct platform_device *pdev)
 					"i2s-controller", 0);
 
 		if (i2s_node) {
-			// dai->cpus->dai_name = NULL;
 			dai->cpus->of_node = i2s_node;
-			// dai->platforms->name = NULL;
 			dai->platforms->of_node = i2s_node;
 		}
 	}
