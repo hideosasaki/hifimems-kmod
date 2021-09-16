@@ -34,7 +34,7 @@ static int snd_rpi_hifimems_soundcard_hw_params(
 	struct snd_pcm_hw_params *params)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+	struct snd_soc_dai *cpu_dai = *rtd->dais;
 
 	unsigned int sample_bits =
 		snd_pcm_format_physical_width(params_format(params));
@@ -47,19 +47,41 @@ static struct snd_soc_ops snd_rpi_hifimems_soundcard_ops = {
 	.hw_params = snd_rpi_hifimems_soundcard_hw_params,
 };
 
+static struct snd_soc_dai_link_component cpus[] = {
+	{
+		.name	= "bcm2708-i2s.0",
+		.dai_name	= "bcm2708-i2s.0",
+	},
+};
+
+static struct snd_soc_dai_link_component codecs[] = {
+	{
+		.name	= "hifimems-codec",
+		.dai_name = "hifimems-hifi",
+	},
+};
+
+static struct snd_soc_dai_link_component platforms[] = {
+	{
+		.name	= "bcm2708-i2s.0",
+		.dai_name	= "bcm2708-i2s.0",
+	},
+};
+
 static struct snd_soc_dai_link snd_rpi_hifimems_soundcard_dai[] = {
-{
-	.name		= "I2S Hifiberry & ICS43432",
-	.stream_name	= "I2S Hifiberry & ICS43432 Audio",
-	.cpu_dai_name	= "bcm2708-i2s.0",
-	.codec_dai_name	= "hifimems-hifi",
-	.platform_name	= "bcm2708-i2s.0",
-	.codec_name	= "hifimems-codec",
-	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
-				SND_SOC_DAIFMT_CBS_CFS,
-	.ops		= &snd_rpi_hifimems_soundcard_ops,
-	.init		= snd_rpi_hifimems_soundcard_init,
-},
+	{
+		.name		= "I2S Hifiberry & ICS43432",
+		.stream_name	= "I2S Hifiberry & ICS43432 Audio",
+		.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS,
+		.ops		= &snd_rpi_hifimems_soundcard_ops,
+		.init		= snd_rpi_hifimems_soundcard_init,
+		.cpus = cpus,
+		.num_cpus = ARRAY_SIZE(cpus),
+		.codecs = codecs,
+		.num_codecs = ARRAY_SIZE(codecs),
+		.platforms = platforms,
+		.num_platforms = ARRAY_SIZE(platforms),
+	},
 };
 
 /* audio machine driver */
@@ -83,10 +105,10 @@ static int snd_rpi_hifimems_soundcard_probe(struct platform_device *pdev)
 					"i2s-controller", 0);
 
 		if (i2s_node) {
-			dai->cpu_dai_name = NULL;
-			dai->cpu_of_node = i2s_node;
-			dai->platform_name = NULL;
-			dai->platform_of_node = i2s_node;
+			dai->cpus->dai_name = NULL;
+			dai->cpus->of_node = i2s_node;
+			dai->platforms->name = NULL;
+			dai->platforms->of_node = i2s_node;
 		}
 	}
 
