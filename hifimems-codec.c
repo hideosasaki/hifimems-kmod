@@ -47,7 +47,7 @@ static struct snd_soc_component_driver hifimems_component = {
 static struct snd_soc_dai_driver hifimems_dai = {
     .name = "hifimems-hifi",
     .capture = {.stream_name = "Capture",
-                .channels_min = 2,
+                .channels_min = 1,
                 .channels_max = 2,
 //                .rates = SNDRV_PCM_RATE_48000,
 //                .formats = SNDRV_PCM_FMTBIT_S32_LE},
